@@ -1,7 +1,6 @@
 "use strict";
 const { Model, Validator } = require("sequelize");
 const bcrypt = require("bcryptjs");
-
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     toSafeObject() {
@@ -10,12 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     }
     static getCurrentUserById(id) {
       return User.scope("currentUser").findByPk(id);
-    }
-    validatePassword(password) {
-      return bcrypt.compareSync(password, this.hashedPassword.toString());
-    }
-    static associate(models) {
-      // define association here
     }
     static async login({ credential, password }) {
       const { Op } = require("sequelize");
@@ -40,8 +33,13 @@ module.exports = (sequelize, DataTypes) => {
       });
       return await User.scope("currentUser").findByPk(user.id);
     }
+    static associate(models) {
+      // define association here
+    }
+    validatePassword(password) {
+      return bcrypt.compareSync(password, this.hashedPassword.toString());
+    }
   }
-
   User.init(
     {
       username: {
@@ -89,8 +87,8 @@ module.exports = (sequelize, DataTypes) => {
       },
     }
   );
-
-
-
+  // function validatePassword (password){
+  //   return bcrypt.compareSync(password, this.hashedPassword.toString());
+  // }
   return User;
 };

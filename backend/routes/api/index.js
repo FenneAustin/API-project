@@ -3,12 +3,19 @@ const { setTokenCookie } = require("../../utils/auth.js");
 const { User } = require("../../db/models");
 const { restoreUser } = require("../../utils/auth.js");
 const { requireAuth } = require("../../utils/auth.js");
+const sessionRouter = require("./session");
+const usersRouter = require("./user");
 
 router.use(restoreUser); //<---- ME FIRST
 
-router.post("/test", function (req, res) {
+router.use("/session", sessionRouter);
+
+router.use("/users", usersRouter);
+
+router.post("/test", (req, res) => {
   res.json({ requestBody: req.body });
 });
+
 
 // GET /api/set-token-cookie
 router.get("/set-token-cookie", async (_req, res) => {
@@ -21,7 +28,6 @@ router.get("/set-token-cookie", async (_req, res) => {
   return res.json({ user });
 });
 
-router.use(restoreUser);
 
 router.get("/restore-user", (req, res) => {
   return res.json(req.user);
